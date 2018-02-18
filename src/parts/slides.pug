@@ -1,0 +1,83 @@
+section
+    img(src='assets/git-data-transport-commands.png')
+section
+    h1 Reset
+section
+    div 3 types of resets in Git
+    pre
+        code.shell git reset --soft
+    pre
+        code.shell git reset --mixed
+    pre
+        code.shell git reset --hard
+section
+    h1 Example
+section
+    div Let's init an empty git repo
+        pre
+            code.shell git init
+    div.fragment.fade-up
+        div Then create three empty files
+        pre
+            code.shell touch file1 && touch file2 && touch file3
+    div.fragment.fade-up
+        div And commit them in three different commits
+        pre
+            code.shell
+                include ../snippets/3commits.sh
+section
+    div History will look like the following
+        pre
+            code.shell git log --format=oneline --abbrev-commit
+        pre
+            code.text
+                include ../snippets/3commits-log.git
+section
+    div Let's do a soft reset
+        pre
+            code.shell git reset HEAD~2 --soft
+    div.fragment.fade-up
+        pre
+            code.shell git status
+        pre
+            code.text
+                include ../snippets/3commits-reset-soft-status.git
+section
+    div Let's do a mixed reset
+        pre
+            code.shell git reset HEAD~2 --mixed
+    div.fragment.fade-up
+        div Or simply
+            pre
+                code.shell git reset HEAD~2
+    div.fragment.fade-up
+        pre
+            code.shell git status
+        pre
+            code.text
+                include ../snippets/3commits-reset-mixed-status.git
+section
+    div Soft
+    pre
+        code.text
+            include ../snippets/3commits-reset-soft-status.git
+    h3 VS
+    div Mixed
+    pre
+        code.text
+            include ../snippets/3commits-reset-mixed-status.git
+section
+    div Let's do a hard reset
+        pre
+            code.shell git reset HEAD~2 --hard
+    div.fragment.fade-up
+        pre
+            code.shell git status
+        pre
+            code.text
+                include ../snippets/3commits-reset-hard-status.git
+    div.fragment.fade-up
+        pre
+            code.shell ls
+        pre
+            code.text file1

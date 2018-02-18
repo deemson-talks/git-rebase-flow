@@ -1,0 +1,5 @@
+1ccf3b4 (HEAD -> master) HEAD@{0}: reset: moving to HEAD@{1}
+d2b2053 HEAD@{1}: reset: moving to HEAD~2
+1ccf3b4 (HEAD -> master) HEAD@{2}: commit: file3
+c87f0fc HEAD@{3}: commit: file2
+d2b2053 HEAD@{4}: commit (initial): file1
