@@ -49,7 +49,7 @@ module.exports = {
                 use: {loader: 'file-loader', options: {name: 'fonts/[name].[ext]'}}
             },
             {
-                test: /\.(png|jpg)$/,
+                test: /\.(png|jpg|svg)$/,
                 use: {loader: 'file-loader', options: {name: 'assets/[name].[ext]'}}
             },
             // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
