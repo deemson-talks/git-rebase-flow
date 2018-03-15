@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+<section>
+  <h1>Git Rebase Flow</h1>
+</section>
+<section><img src="assets/git-data-transport-commands.png"></section>
+<section>
+  <h1>Reset</h1>
+</section>
+<section>
+  <div>3 types of resets in Git</div>
+  <pre><code class="shell">git reset --soft</code></pre>
+  <pre><code class="shell">git reset --mixed</code></pre>
+  <pre><code class="shell">git reset --hard</code></pre>
+</section>
+<section>
+  <h1>Example</h1>
+</section>
+<section>
+  <div>Let's init an empty git repo
+    <pre><code class="shell">git init</code></pre>
+  </div>
+  <div class="fragment fade-up">
+    <div>Then create three empty files</div>
+    <pre><code class="shell">touch file1 && touch file2 && touch file3</code></pre>
+  </div>
+  <div class="fragment fade-up">
+    <div>And commit them in three different commits</div>
+    <pre><code class="shell">git add file1 && git commit --message "file1"
+git add file2 && git commit --message "file2"
+git add file3 && git commit --message "file3"</code></pre>
+  </div>
+</section>
+<section>
+  <div>History will look like the following
+    <pre><code class="shell">git log --format=oneline --abbrev-commit</code></pre>
+    <pre><code class="text">1ccf3b4 (HEAD -> master) file3
+c87f0fc file2
+d2b2053 file1</code></pre>
+  </div>
+</section>
+<section>
+  <div>Let's do a soft reset
+    <pre><code class="shell">git reset HEAD~2 --soft</code></pre>
+  </div>
+  <div class="fragment fade-up">
+    <pre><code class="shell">git status</code></pre>
+    <pre><code class="text">On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   file2
+	new file:   file3</code></pre>
+  </div>
+</section>
+<section>
+  <div>Let's do a mixed reset
+    <pre><code class="shell">git reset HEAD~2 --mixed</code></pre>
+  </div>
+  <div class="fragment fade-up">
+    <div>Or simply
+      <pre><code class="shell">git reset HEAD~2</code></pre>
+    </div>
+  </div>
+  <div class="fragment fade-up">
+    <pre><code class="shell">git status</code></pre>
+    <pre><code class="text">On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	file2
+	file3
+
+nothing added to commit but untracked files present (use "git add" to track)</code></pre>
+  </div>
+</section>
+<section>
+  <div>Soft</div>
+  <pre><code class="text">On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   file2
+	new file:   file3</code></pre>
+  <h3>VS</h3>
+  <div>Mixed</div>
+  <pre><code class="text">On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	file2
+	file3
+
+nothing added to commit but untracked files present (use "git add" to track)</code></pre>
+</section>
+<section>
+  <div>Let's do a hard reset
+    <pre><code class="shell">git reset HEAD~2 --hard</code></pre>
+  </div>
+  <div class="fragment fade-up">
+    <pre><code class="shell">git status</code></pre>
+    <pre><code class="text">On branch master
+nothing to commit, working tree clean</code></pre>
+  </div>
+  <div class="fragment fade-up">
+    <pre><code class="shell">ls</code></pre>
+    <pre><code class="text">file1</code></pre>
+  </div>
+</section>
+<section>
+  <h3>Reset: Take Away notes</h3>
+  <ul>
+    <li>
+      <div>Soft &mdash; reset local repo, but leave index and workspace as they are</div>
+      <pre><code class="shell">git reset --soft &lt;commit&gt;</code></pre>
+    </li>
+    <li>
+      <div>Mixed &mdash; reset local repo and index, but leave workspace as it is</div>
+      <pre><code class="shell">git reset &lt;commit&gt;</code></pre>
+    </li>
+    <li>
+      <div>Hard &mdash; reset local repo, index and workspace</div>
+      <pre><code class="shell">git reset --hard &lt;commit&gt;</code></pre>
+    </li>
+  </ul>
+</section>
+<section>
+  <h1>Rebasing Basics</h1>
+</section>
+<section>
+  <div>Your everyday rebase command</div>
+  <pre><code class="shell">git rebase --onto &lt;new-base&gt; &lt;upstream&gt; &lt;branch&gt;</code></pre>
+</section>
+<section>
+  <pre><code class="shell">git rebase --onto &lt;new-base&gt; &lt;upstream&gt; &lt;branch&gt;</code></pre>
+  <ol>
+    <li class="fragment fade-up">git checkout &lt;branch&gt;</li>
+    <li class="fragment fade-up">save commits in &lt;upstream&gt;..HEAD</li>
+    <li class="fragment fade-up">git reset --hard &lt;upstream&gt;</li>
+    <li class="fragment fade-up">git checkout &lt;new-base&gt;</li>
+    <li class="fragment fade-up">apply saved commits in &lt;upstream&gt;..HEAD</li>
+  </ol>
+</section>
+<section>
+  <pre><code class="shell">git rebase --onto master master feature</code></pre>
+  <section><img src="assets/rebase1.jpg" width="40%"></section>
+  <section><img src="assets/rebase2.jpg" width="40%"></section>
+  <section><img src="assets/rebase3.jpg" width="40%"></section>
+  <section><img src="assets/rebase4.jpg" width="40%"></section>
+  <section><img src="assets/rebase5.jpg" width="40%"></section>
+</section>
+<section>
+  <pre><code class="shell">git rebase --onto master master feature</code></pre>
+  <div>simplified</div>
+  <pre><code class="shell">git rebase master</code></pre>
+</section>
+<section>
+  <pre><code class="shell">git rebase master feature1</code></pre>
+  <section><img src="assets/rebase2-1.jpg" width="40%"></section>
+  <section><img src="assets/rebase2-2.jpg" width="40%"></section>
+</section>
+<section>
+  <h3>What if there are conflicts?</h3>
+</section>
+<section>
+  <section><img src="assets/rebase-conflict1.jpg" width="40%"></section>
+  <section><img src="assets/rebase-conflict2.jpg" width="40%"></section>
+  <section><img src="assets/rebase-conflict3.jpg" width="40%"></section>
+  <section><img src="assets/rebase-conflict4.jpg" width="40%"></section>
+  <section>
+    <div>Rebase stopped. You have two options</div>
+    <ol>
+      <li class="fragment fade-up">git rebase --abort</li>
+      <li class="fragment fade-up">resolve conflicts and git rebase --continue</li>
+    </ol>
+  </section>
+  <section>
+    <div>To resolve conflicts you need to</div>
+    <ul>
+      <li class="fragment fade-up">edit conflicting files and resolve all of the conflicts</li>
+      <li class="fragment fade-up">git add all the resolved files</li>
+      <li class="fragment fade-up">git rebase --continue</li>
+    </ul>
+  </section>
+  <section><img src="assets/rebase-conflict5.jpg" width="40%"></section>
+</section>
+<section>
+  <h3>Rebase: Take Away Notes</h3>
+  <ol style="width: 90%;">
+    <li>
+      <pre><code class="shell">git checkout &lt;feature-branch&gt;</code></pre>
+    </li>
+    <li>
+      <div>If you rebase over target</div>
+      <pre><code class="shell">git rebase &lt;target&gt;</code></pre>
+      <div>If you rebase to somewhere else</div>
+      <pre><code class="shell">git rebase --onto &lt;somewhere-else&gt; &lt;commit-to-compare&gt;</code></pre>
+    </li>
+  </ol>
+</section>
+<section>
+  <h1>Reflog</h1>
+</section>
+<section>
+  <div>Let's reiterate the example with 3 files (the slides about git reset)</div>
+</section>
+<section>
+  <div>Init an empty git repo
+    <pre><code class="shell">git init</code></pre>
+  </div>
+  <div class="fragment fade-up">
+    <div>Then create three empty files</div>
+    <pre><code class="shell">touch file1 && touch file2 && touch file3</code></pre>
+  </div>
+  <div class="fragment fade-up">
+    <div>And commit them in three different commits</div>
+    <pre><code class="shell">git add file1 && git commit --message "file1"
+git add file2 && git commit --message "file2"
+git add file3 && git commit --message "file3"</code></pre>
+  </div>
+</section>
+<section>
+  <div>Current reflog
+    <pre><code class="shell">git reflog</code></pre>
+    <pre class="fragment fade-up"><code class="text">1ccf3b4 (HEAD -> master) HEAD@{0}: commit: file3
+c87f0fc HEAD@{1}: commit: file2
+d2b2053 HEAD@{2}: commit (initial): file1</code></pre>
+  </div>
+</section>
+<section>
+  <div>To go back in time you do one of the following</div>
+  <ul>
+    <li class="fragment fade-up">git reset --hard on a concrete hash</li>
+    <li class="fragment fade-up">git reset --hard HEAD@{N} to go N steps back</li>
+  </ul>
+</section>
+<section>
+  <div>After the soft reset had been shown, I went back in time.</div>
+  <div class="fragment fade-up">
+    <div>Reflog changed to</div>
+    <pre><code class="text">1ccf3b4 (HEAD -> master) HEAD@{0}: reset: moving to HEAD@{1}
+d2b2053 HEAD@{1}: reset: moving to HEAD~2
+1ccf3b4 (HEAD -> master) HEAD@{2}: commit: file3
+c87f0fc HEAD@{3}: commit: file2
+d2b2053 HEAD@{4}: commit (initial): file1</code></pre>
+  </div>
+</section>
+<section>
+  <div>Then there was mixed reset.</div>
+  <div class="fragment fade-up">
+    <div>Reflog changed to</div>
+    <pre><code class="text">1ccf3b4 (HEAD -> master) HEAD@{0}: reset: moving to HEAD@{1}
+d2b2053 HEAD@{1}: reset: moving to HEAD~2
+1ccf3b4 (HEAD -> master) HEAD@{2}: reset: moving to HEAD@{1}
+d2b2053 HEAD@{3}: reset: moving to HEAD~2
+1ccf3b4 (HEAD -> master) HEAD@{4}: commit: file3
+c87f0fc HEAD@{5}: commit: file2
+d2b2053 HEAD@{6}: commit (initial): file1</code></pre>
+  </div>
+</section>
+<section>
+  <h3>Reflog: Take Away Notes</h3>
+  <ol style="width: 70%;">
+    <li>
+      <pre><code class="shell">git reflog</code></pre>
+    </li>
+    <li>
+      <pre><code class="shell">git reset --hard &lt;hash&gt;</code></pre>
+      <div>or</div>
+      <pre><code class="shell">git reset --hard HEAD@{N}</code></pre>
+    </li>
+  </ol>
+</section>
+<section>
+  <h3>Just One More Thing</h3>
+  <ul>
+    <li>try stuff</li>
+    <li>screw up</li>
+    <li>reflog back</li>
+    <li>try stuff again</li>
+  </ul>
+</section>
+<section>
+  <h1>Interactive Rebase</h1>
+</section>
+<section>
+  <pre><code class="shell">git rebase --interactive --onto &lt;new-base&gt; &lt;upstream&gt; &lt;branch&gt;</code></pre>
+</section>
+<section>
+  <div>Rebase your last three commits on master</div>
+  <pre><code class="shell">git rebase -i --onto master HEAD~3</code></pre>
+</section>
+<section>
+  <div>Example with 3 files!</div>
+</section>
+<section>
+  <pre><code class="shell">git init</code></pre>
+  <pre><code class="shell">touch file1 && touch file2 && touch file3</code></pre>
+  <pre><code class="shell">git add file1 && git commit --message "file1"
+git add file2 && git commit --message "file2"
+git add file3 && git commit --message "file3"</code></pre>
+</section>
+<section>
+  <section>
+    <pre><code class="shell">git rebase -i HEAD~2</code></pre>
+  </section>
+  <section>
+    <pre><code class="text">pick ee1b739 file2
+pick 36e1958 file3
+
+# Rebase b6baa92..36e1958 onto b6baa92 (2 commands)
+#
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous commit
+# f, fixup = like "squash", but discard this commit's log message
+# x, exec = run command (the rest of the line) using shell
+# d, drop = remove commit
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+# Note that empty commits are commented out</code></pre>
+  </section>
+  <section>
+    <pre><code class="text">pick ee1b739 file2
+squash 36e1958 file3
+
+# Rebase b6baa92..36e1958 onto b6baa92 (2 commands)
+#
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous commit
+# f, fixup = like "squash", but discard this commit's log message
+# x, exec = run command (the rest of the line) using shell
+# d, drop = remove commit
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+# Note that empty commits are commented out</code></pre>
+  </section>
+  <section>
+    <pre><code class="text"># This is a combination of 2 commits.
+# This is the 1st commit message:
+
+file2
+
+# This is the commit message #2:
+
+file3
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# Date:      Wed Feb 21 17:40:46 2018 +0200
+#
+# interactive rebase in progress; onto b6baa92
+# Last commands done (2 commands done):
+#    pick ee1b739 file2
+#    squash 36e1958 file3
+# No commands remaining.
+# You are currently rebasing branch 'master' on 'b6baa92'.
+#
+# Changes to be committed:
+#	new file:   file2
+#	new file:   file3
+#</code></pre>
+  </section>
+  <section>
+    <pre><code class="text">* commit 1fe1cfd (HEAD -> master)
+| Author: Awesome Dude
+| Date:   Wed Feb 21 17:40:46 2018 +0200
+|
+|     file2
+|
+|     file3
+|
+* commit b6baa92
+  Author: Awesome Dude
+  Date:   Wed Feb 21 17:40:46 2018 +0200
+
+      file1</code></pre>
+  </section>
+</section>
+<section>
+  <h1>Fast Forward</h1>
+</section>
+<section>
+  <div class="fragment fade-up">Merge will fast forward when it's able or do a merge commit otherwise</div>
+  <pre><code class="shell">git merge &lt;hash&gt;</code></pre>
+  <div class="fragment fade-up">No-ff will always make a merge commit</div>
+  <pre><code class="shell">git merge --no-ff &lt;hash&gt;</code></pre>
+  <div class="fragment fade-up">Ff-only will try to do a fast forward or fail if it's not possible</div>
+  <pre><code class="shell">git merge --ff-only &lt;hash&gt;</code></pre>
+</section>
+<section>
+  <section>
+    <div>Fast forward possible!</div><img src="assets/ff1.jpg" width="40%">
+  </section>
+  <section><img src="assets/ff2.jpg" width="40%"></section>
+  <section>
+    <div>Using --no-ff flag will force a merge commit even though fast forward is possible</div><img src="assets/ff3.jpg" width="40%">
+  </section>
+  <section>
+    <div>Fast forward is not possible!</div><img src="assets/ff4.jpg" width="40%">
+  </section>
+</section>
+<section>
+  <h3>Fast Forward: Takeaway Notes</h3>
+  <ul style="width: 70%;">
+    <li>Don't use default merge</li>
+    <li>
+      <div>no-ff for branching flow</div>
+      <pre><code class="shell">git merge --no-ff &lt;hash&gt;</code></pre>
+    </li>
+    <li>
+      <div>ff-only for rebase flow</div>
+      <pre><code class="shell">git reset --ff-only &lt;hash&gt;</code></pre>
+    </li>
+  </ul>
+</section>
+<section>
+  <h1>Caveats</h1>
+</section>
+<section>
+  <ul style="width: 90%;">
+    <li>
+      <div>we did not cover working with remotes</div>
+      <pre><code class="shell">git pull origin develop --rebase</code></pre>
+    </li>
+    <li>
+      <div>rebase is destructive</div>
+      <pre><code class="shell">git push --force</code></pre>
+    </li>
+  </ul>
+</section>
+<section>
+  <h3>Homework</h3>
+  <div>learn git stash</div>
+</section>
+<section>
+  <h1>Questions</h1>
+</section>
+      </div>
+    </div>
+    <script src="bundle.js"></script>
+  </body>
+</html>
